@@ -6,6 +6,7 @@ from flask import request
 # Third
 from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist, NotUniqueError, ValidationError
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 # Apps
 from apps.responses import resp_ok, resp_exception
@@ -14,14 +15,14 @@ from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED, 
 # Local
 from .models import User
 from .schemas import UserSchema, UserUpdateSchema
-from .utils import get_user_by_id, exists_email_in_users
+from .utils import get_user_by_id, exists_email_in_users, get_user_by_email
 
 
 class AdminUserPageList(Resource):
 
     # Lembra-se do page_id criado na rota ele pode ser acessado como parâmetro
     # do metodo get
-
+    @jwt_required
     def get(self, page_id=1):
         # inicializa o schema podendo conter varios objetos
         schema = UserSchema(many=True)
@@ -63,10 +64,18 @@ class AdminUserPageList(Resource):
 
 
 class AdminUserResource(Resource):
-
+    @jwt_required
     def get(self, user_id):
         result = None
         schema = UserSchema()
+
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
 
         user = get_user_by_id(user_id)
 
@@ -76,9 +85,19 @@ class AdminUserResource(Resource):
             'Users', MSG_RESOURCE_FETCHED.format('Usuário'),  data=result.data
         )
 
+    @jwt_required
     def put(self, user_id):
         result = None
         schema = UserSchema()
+
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
+
         update_schema = UserUpdateSchema()
         req_data = request.get_json() or None
         email = None
@@ -134,7 +153,15 @@ class AdminUserResource(Resource):
             'Users', MSG_RESOURCE_UPDATED.format('Usuário'),  data=result.data
         )
 
+    @jwt_required
     def delete(self, user_id):
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
         # Busco o usuário na coleção users pelo seu id
         user = get_user_by_id(user_id)
 

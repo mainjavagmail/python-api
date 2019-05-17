@@ -2,13 +2,21 @@
 
 # Python
 from os import getenv
+from datetime import timedelta
 
 
 class Config:
+    print(getenv('SECRET_KEY'))
     SECRET_KEY = getenv('SECRET_KEY')
     APP_PORT = getenv('APP_PORT')
     DEBUG = getenv('DEBUG')
-    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://localhost:27017/mydb')
+    MONGODB_HOST = getenv('MONGODB_URI')
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(
+        minutes=getenv('JWT_ACCESS_TOKEN_EXPIRES')
+    )
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(
+        days=getenv('JWT_REFRESH_TOKEN_EXPIRES')
+    )
 
 
 class DevelopmentConfig(Config):
