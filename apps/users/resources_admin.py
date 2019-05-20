@@ -9,8 +9,8 @@ from mongoengine.errors import FieldDoesNotExist, NotUniqueError, ValidationErro
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 # Apps
-from apps.responses import resp_ok, resp_exception
-from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED, MSG_INVALID_DATA, MSG_RESOURCE_UPDATED, MSG_RESOURCE_DELETED
+from apps.responses import resp_ok, resp_exception, resp_notallowed_user, resp_data_invalid, resp_already_exists
+from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED, MSG_INVALID_DATA, MSG_RESOURCE_UPDATED, MSG_RESOURCE_DELETED, MSG_NO_DATA, MSG_ALREADY_EXISTS
 
 # Local
 from .models import User
@@ -41,7 +41,6 @@ class AdminUserPageList(Resource):
         try:
             # buscamos todos os usuarios da base utilizando o paginate
             users = User.objects().paginate(page_id, page_size)
-            print(users)
         except FieldDoesNotExist as e:
             return resp_exception('Users', description=e.__str__())
 
@@ -56,7 +55,7 @@ class AdminUserPageList(Resource):
 
         # fazemos um dump dos objetos pesquisados
         result = schema.dump(users.items)
-
+        print(u for u in users.items)
         return resp_ok(
             'Users', MSG_RESOURCE_FETCHED_PAGINATED.format('usuários'),  data=result.data,
             **extra

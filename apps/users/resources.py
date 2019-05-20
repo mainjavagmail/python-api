@@ -44,7 +44,7 @@ class SignUp(Resource):
         # verifico através de uma função a senha e a confirmação da senha
         # Se as senhas não são iguais retorno uma respota inválida
         if not check_password_in_signup(password, confirm_password):
-            errors = {'password': MSG_PASSWORD_WRONG}
+            errors = {'confirm_password': MSG_PASSWORD_WRONG}
             return resp_data_invalid('Users', errors)
 
         # Desserialização os dados postados ou melhor meu payload

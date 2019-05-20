@@ -4,6 +4,7 @@
 from flask_restful import Api, Resource
 from apps.users.resources import SignUp
 from apps.users.resources_admin import AdminUserPageList, AdminUserResource
+from apps.auth.resources import AuthResource, RefreshTokenResource
 
 
 class Index(Resource):  # Criamos uma classe que extende de Resource

@@ -7,7 +7,6 @@ from os.path import dirname, isfile, join
 
 from dotenv import load_dotenv
 
-
 # a partir do arquivo atual adicione ao path o arquivo .env
 _ENV_FILE = join(dirname(__file__), '.env')
 
