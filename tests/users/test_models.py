@@ -22,6 +22,8 @@ class TestUser:
         # Crio uma instancia do modelo User
         self.model = User(**self.data)
 
+        User().drop_collection()
+
     def test_email_field_exists(self):
         """
         Verifico se o campo email existe

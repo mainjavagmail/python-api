@@ -4,6 +4,8 @@
 from flask_restful import Api, Resource
 from apps.users.resources import SignUp
 from apps.users.resources_admin import AdminUserPageList, AdminUserResource
+from apps.cars.resources_admin import AdminCarResource
+from apps.cars.resources import CarResource
 from apps.auth.resources import AuthResource, RefreshTokenResource
 
 
@@ -30,6 +32,8 @@ def configure_api(app):
     api.add_resource(AdminUserResource, '/admin/users/<string:user_id>')
     api.add_resource(AuthResource, '/auth')
     api.add_resource(RefreshTokenResource, '/auth/refresh')
+    api.add_resource(AdminCarResource, '/admin/car')
+    api.add_resource(CarResource, '/cars')
 
     # inicializamos a api com as configurações do flask vinda por parâmetro
     api.init_app(app)

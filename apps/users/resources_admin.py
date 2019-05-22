@@ -55,7 +55,7 @@ class AdminUserPageList(Resource):
 
         # fazemos um dump dos objetos pesquisados
         result = schema.dump(users.items)
-        print(u for u in users.items)
+        
         return resp_ok(
             'Users', MSG_RESOURCE_FETCHED_PAGINATED.format('usuários'),  data=result.data,
             **extra
